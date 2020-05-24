@@ -1,4 +1,5 @@
 <template>
+<div class="bg">
   <el-form :model="ruleForm2" :rules="rules2" ref="ruleForm2" label-position="left" label-width="0px" class="demo-ruleForm login-container">
     <h3 class="title">Register</h3>
 
@@ -40,12 +41,15 @@
         <el-input v-model="ruleForm2.phoneNo" placeholder="Phone No." ></el-input>
     </el-form-item>
 
-   
-
     <el-form-item style="width:100%;">
-      <el-button type="primary" style="width:100%;" @click.native.prevent="handleSubmit2" :loading="logining">Sign In</el-button>
+      <el-button type="primary" style="width:100%;" @click.native.prevent="handleSubmit2" :loading="logining">Register</el-button>
     </el-form-item>
+
+    <el-form-item>
+       <div style="float:right;cursor: pointer;" @click ="login"><u>Already have an Account? Login</u></div>
+      </el-form-item>
   </el-form>
+</div>
 </template>
 
 <script>
@@ -90,25 +94,26 @@
                 email: this.ruleForm2.email,
                 HKID: this.ruleForm2.HKID,
                 type: this.ruleForm2.role,
-                password: this.randomString(16, '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'),
+                password: this.randomString(10, '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'),
                 phone_no: this.ruleForm2.phoneNo,
                 gender: this.ruleForm2.gender,
             }
-
-            this.$confirm('Do you confirm the submission?', 'Create', {}).then(() => {
-                axios.post('users/register', (para)).then(res => {
-                    //this.$router.push({ name: "View User", query: { userID: res.data.userID}})
-                    console.log(para)
-                    axios.post('email/sendemail',(para))
-                    .then(res => {
-                      
-                    })
-                }).catch(err => {
-                    console.log(err)
-                })
+            axios.post('users/register', (para)).then(res => {
+              //this.$router.push({ name: "View User", query: { userID: res.data.userID}})
+              axios.post('email/sendemail',(para)).then(res => {
+                if(res.status == 200){
+                  this.$message({
+                    message: res.data.response,
+                    type: 'success',
+                    duration: 5 * 1000
+                  });
+                  localStorage.removeItem('usertoken')
+                  this.$router.push({ path: '/login' })
+                }
+              })
+            }).catch(err => {
+                console.log(err)
             })
-            
-            //router.push({path: `/projectdetails/${id}`, query: {'success': true, 'type': type}})
         },
 
       handleReset2() {
@@ -127,7 +132,11 @@
             console.log('error submit!!');
             return false;
           }
-        });
+        })
+      },
+      login(){
+        localStorage.removeItem('usertoken')
+        this.$router.push({ path: '/login' })
       }
     }
   }
@@ -135,25 +144,47 @@
 </script>
 
 <style lang="scss" scoped>
-  .login-container {
-    /*box-shadow: 0 0px 8px 0 rgba(0, 0, 0, 0.06), 0 1px 0px 0 rgba(0, 0, 0, 0.02);*/
-    -webkit-border-radius: 5px;
-    border-radius: 5px;
-    -moz-border-radius: 5px;
-    background-clip: padding-box;
-    margin: 180px auto;
-    width: 350px;
-    padding: 35px 35px 15px 35px;
-    background: #fff;
-    border: 1px solid #eaeaea;
-    box-shadow: 0 0 25px #cac6c6;
-    .title {
-      margin: 0px auto 40px auto;
-      text-align: center;
-      color: #505458;
-    }
-    .remember {
-      margin: 0px 0px 35px 0px;
-    }
+.bg {
+    /* The image used */
+    background-image: url("https://www.eschoolnews.com/files/2018/07/attendance.jpg");
+
+    /* Full height */
+    height: 100%;
+
+    /* Center and scale the image nicely */
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
   }
+
+.login-container {
+  /*box-shadow: 0 0px 8px 0 rgba(0, 0, 0, 0.06), 0 1px 0px 0 rgba(0, 0, 0, 0.02);*/
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  background-clip: padding-box;
+  margin: 180px auto;
+  margin-right: 180px;
+  margin-left: 180px;
+  width: 350px;
+  padding: 35px 35px 15px 35px;
+  background: #fff;
+  border: 1px solid #eaeaea;
+  box-shadow: 0 0 25px #cac6c6;
+
+  .title {
+    margin: 0px auto 40px auto;
+    text-align: center;
+    color: #505458;
+  }
+}
+
+.login-container1 {
+  /*box-shadow: 0 0px 8px 0 rgba(0, 0, 0, 0.06), 0 1px 0px 0 rgba(0, 0, 0, 0.02);*/
+  margin-top: 180px;
+  margin-right: 180px;
+  margin-left: 180px;
+  width: 350px;
+  padding: 35px 35px 15px 35px;
+}
 </style>
