@@ -1,15 +1,49 @@
 <template>
   <el-form :model="ruleForm2" :rules="rules2" ref="ruleForm2" label-position="left" label-width="0px" class="demo-ruleForm login-container">
     <h3 class="title">Register</h3>
-    <el-form-item prop="account">
-      <el-input type="text" v-model="ruleForm2.account" auto-complete="off" placeholder="Account"></el-input>
+
+    <el-form-item prop="Email">
+      <el-input type="text" v-model="ruleForm2.email" auto-complete="off" placeholder="Email"></el-input>
     </el-form-item>
-    <el-form-item prop="checkPass">
-      <el-input type="password" v-model="ruleForm2.checkPass" auto-complete="off" placeholder="Password"></el-input>
+
+    <el-form-item prop="Role">
+        <el-col :span="11">
+            <el-select v-model="ruleForm2.role" placeholder="select">
+            <el-option label="Student" value="student"></el-option>
+            <el-option label="Teacher" value="teacher"></el-option>
+            </el-select>
+        </el-col>
+        <el-col class="line" :span="2">&nbsp</el-col>
+        <el-col :span="6">
+            <el-input v-model="ruleForm2.HKID" placeholder="HKID"></el-input>
+        </el-col>
     </el-form-item>
+
+    <el-form-item prop="Name">
+        <el-col :span="11">
+            <el-input v-model="ruleForm2.last_name" placeholder="Last Name"></el-input>
+        </el-col>
+        <el-col class="line" :span="2"></el-col>
+        <el-col :span="11">
+            <el-input v-model="ruleForm2.first_name" placeholder="First Name"></el-input>
+        </el-col>
+    </el-form-item>
+
+    <el-form-item prop="Gender">
+        <el-radio-group v-model="ruleForm2.gender">
+            <el-radio label="Female"></el-radio>
+            <el-radio label="Male"></el-radio>
+        </el-radio-group>
+    </el-form-item>
+
+    <el-form-item prop="Phone No.">
+        <el-input v-model="ruleForm2.phoneNo" placeholder="Phone No." ></el-input>
+    </el-form-item>
+
+   
+
     <el-form-item style="width:100%;">
       <el-button type="primary" style="width:100%;" @click.native.prevent="handleSubmit2" :loading="logining">Sign In</el-button>
-      <!--<el-button @click.native.prevent="handleReset2">重置</el-button>-->
     </el-form-item>
   </el-form>
 </template>
@@ -23,23 +57,60 @@
       return {
         logining: false,
         ruleForm2: {
-          account: '',
-          checkPass: ''
+          email: '',
+          role:'',
+          HKID:'',
+          last_name:'',
+          first_name:'',
+          phoneNo:'',
         },
         rules2: {
-          account: [
+          email: [
             { required: true, message: 'Please enter email', trigger: 'blur' },
             //{ validator: validaePass }
           ],
-          checkPass: [
-            { required: true, message: 'Please enter password', trigger: 'blur' },
-            //{ validator: validaePass2 }
-          ]
+          HKID: [
+            { required: true, message: 'Please enter email', trigger: 'blur' },
+            //{ validator: validaePass }
+          ],
         },
         checked: true
       };
     },
     methods: {
+    randomString(length, chars) {
+      var result = '';
+      for (var i = length; i > 0; --i) result += chars[Math.floor(Math.random() * chars.length)];
+      return result;
+    },
+      register () {
+            let para = {
+                first_name: this.ruleForm2.first_name,
+                last_name: this.ruleForm2.last_name,
+                email: this.ruleForm2.email,
+                HKID: this.ruleForm2.HKID,
+                type: this.ruleForm2.role,
+                password: this.randomString(16, '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'),
+                phone_no: this.ruleForm2.phoneNo,
+                gender: this.ruleForm2.gender,
+            }
+
+            this.$confirm('Do you confirm the submission?', 'Create', {}).then(() => {
+                axios.post('users/register', (para)).then(res => {
+                    //this.$router.push({ name: "View User", query: { userID: res.data.userID}})
+                    console.log(para)
+                    axios.post('email/sendemail',(para))
+                    .then(res => {
+                      
+                    })
+                }).catch(err => {
+                    console.log(err)
+                })
+            })
+            
+            //router.push({path: `/projectdetails/${id}`, query: {'success': true, 'type': type}})
+        },
+
       handleReset2() {
         this.$refs.ruleForm2.resetFields();
       },
@@ -51,17 +122,7 @@
             this.logining = true;
             //NProgress.start();
             var loginParams = { username: this.ruleForm2.account, password: this.ruleForm2.checkPass };
-              // axios.post(`http://localhost:3000/api/auth/register/`, {
-              //   username: this.ruleForm2.account, 
-              //   password: this.ruleForm2.checkPass,
-              //   publicKey: response.data.publicKey,
-              //   //response.data.publicKey,
-              // })
-              // .then(response=>{
-              //   sessionStorage.removeItem('user');
-              //   alert("Registered successfully")
-              //   this.$router.push({ path: '/login' });
-              // })
+              this.register();
           } else {
             console.log('error submit!!');
             return false;

@@ -35,7 +35,7 @@ module.exports = {
         target: 'http://localhost:5000',
         changeOrigin: true
       },
-      '/api': {
+      '/email': {
         target: 'http://localhost:5000',
         changeOrigin: true
       }
