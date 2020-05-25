@@ -147,7 +147,11 @@ export default {
 			this.role = decoded.type;
 			localStorage.setItem('role', this.role);
 			this.sysUserName = decoded.last_name + ' ' + decoded.first_name  || '';
-			this.sysUserAvatar = this.getURL(decoded.photo) || '';
+			console.log(decoded.photo )
+			if(decoded.photo == null || decoded.photo == undefined){
+				decoded.photo = 'unknow.png'
+			}
+			this.sysUserAvatar = this.getURL(decoded.photo);
 		}
 
 	}

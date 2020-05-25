@@ -59,8 +59,8 @@ export default {
           })
       },
       handleEdit: function (index,row) {
-      this.$router.push({ name: "Set Attendance", query: { class_id: row._id}})
-    },
+        this.$router.push({ name: "Set Attendance", query: { class_id: row._id}})
+      },
     }
 }
 </script>

@@ -69,6 +69,7 @@
 </template>
 
 <script>
+import jwtDecode from 'jwt-decode'
 import axios from 'axios'
 import router from '../router'
 export default {
@@ -89,12 +90,27 @@ export default {
     this.handleEdit ()
   },
   methods: {
-    handleEdit () {      
-      axios.post('classes/queryClassbyID/'+ this.$route.query.class_id)
-        .then((response) => {
-            this.students = response.data.student
-            this.selectClass = response.data.class_TimeDetails
-        })
+    handleEdit () {   
+      if(localStorage.getItem('role') == "Admin"){   
+        axios.post('classes/queryClassbyID/'+ this.$route.query.class_id)
+          .then((response) => {
+              this.students = response.data.student
+              this.selectClass = response.data.class_TimeDetails
+          })
+        }else if(localStorage.getItem('role') == "teacher"){
+          var user = localStorage.getItem('usertoken');
+          const token = localStorage.usertoken
+          const decoded = jwtDecode(token)
+          if (decoded) {
+            axios.get('classes/queryClassbyIDandUserID/'+ this.$route.query.class_id +"&" + decoded._id)
+          .then((response) => {
+            if(response.data != null){
+              this.students = response.data.student
+              this.selectClass = response.data.class_TimeDetails
+            }
+          })
+          }
+        }
     },
     handleDownload() {
       this.downloadLoading = true

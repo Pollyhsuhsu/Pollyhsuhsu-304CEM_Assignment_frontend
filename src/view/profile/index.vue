@@ -81,7 +81,6 @@ export default {
   },
   methods: {
     dialogConfim() {
-      var user = localStorage.getItem('usertoken');
       const token = localStorage.usertoken
       const decoded = jwtDecode(token)
       if (decoded) {
@@ -109,7 +108,6 @@ export default {
       this.activeTab = "account"
     },
     getUser() {
-      var user = localStorage.getItem('usertoken');
       const token = localStorage.usertoken
       const decoded = jwtDecode(token)
       if (decoded) {
@@ -118,11 +116,19 @@ export default {
             email: decoded.email,
             role: decoded.type,
             name: decoded.last_name + ' ' + decoded.first_name,
+            HKID: decoded.HKID,
+            gender: decoded.gender,
+            phoneNo: decoded.phone_no,
+            date: decoded.date,
+            address: decoded.address,
             avatar: this.getURL(decoded.photo)
         }
       }
     },
     getURL(img) {
+      if(img == null){
+        img = "unknow.png"
+      }
 			return require('../../assets/' + img)
     },
     handleClick(tab, event){
