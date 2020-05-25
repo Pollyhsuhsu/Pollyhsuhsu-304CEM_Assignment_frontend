@@ -121,7 +121,7 @@ let routes = [
       roles: ["teacher"],
       children: [
         { path: '/listDepartments', component: ListDepartments, name: 'message.listDepartment' },
-        { path: '/editDepartment', component: EditDepartment, name: 'message.addDepartment', hidden:true}
+        { path: '/editDepartment', component: EditDepartment, name: 'Edit Department', hidden:true}
       ]
     },
     {

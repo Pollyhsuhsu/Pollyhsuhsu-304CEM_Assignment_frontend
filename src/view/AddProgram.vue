@@ -195,7 +195,7 @@ export default {
             console.log(para)
             this.$confirm('Do you confirm to create a new program?', 'Create', {}).then(() => {
                 axios.post('programs/createPgrm', (para)).then(res => {
-                    console.log(res.data)
+                    console.log(res.data.prgm_id)
                     this.$router.push({ name: "Edit Program", query: { prgm_id: res.data.prgm_id}})
                 })
                 .catch(err => {
