@@ -1,3 +1,6 @@
+## Report
+https://pollyhsuhsu.github.io/Pollyhsuhsu-304CEM_Assignment_frontend/report.pdf
+
 # client
 
 > A Vue.js project
